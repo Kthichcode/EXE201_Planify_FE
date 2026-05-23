@@ -1,11 +1,25 @@
-const API_BASE_URL = 'https://localhost:7031/api'; 
-// Bạn cũng có thể thử: 'http://localhost:5240/api' nếu HTTPS gặp vấn đề về chứng chỉ
+const API_BASE_URL = 'https://localhost:7031/api';
 
-export interface AuthResponse {
-  token: string;
+export interface UserData {
   email: string;
   fullName: string;
-  expiration: string;
+  accessTokenExpiration: string;
+  refreshTokenExpiration: string;
+}
+
+export interface AuthResponseData {
+  accessToken: string;
+  refreshToken: string;
+  email: string;
+  fullName: string;
+  accessTokenExpiration: string;
+  refreshTokenExpiration: string;
+}
+
+export interface ApiResponse<T> {
+  statusCode: number;
+  message: string;
+  data: T;
 }
 
 export interface RegisterData {
@@ -20,80 +34,98 @@ export interface LoginData {
 }
 
 export const authService = {
-  async register(data: RegisterData): Promise<AuthResponse> {
-    try {
-      const response = await fetch(`${API_BASE_URL}/Auth/register`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-      });
-
-      const result = await response.json();
-
-      if (!response.ok) {
-        console.error('Register Error:', result);
-        throw new Error(result.message || result.title || 'Đăng ký thất bại');
-      }
-
-      return result;
-    } catch (error: any) {
-      console.error('Fetch Register Error:', error);
-      throw error;
+  async register(data: RegisterData): Promise<ApiResponse<AuthResponseData>> {
+    const response = await fetch(`${API_BASE_URL}/Auth/register`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
+    const result = await response.json();
+    if (!response.ok || (result.statusCode && result.statusCode >= 400)) {
+      throw new Error(result.message || 'Đăng ký thất bại');
     }
+    return result;
   },
 
-  async login(data: LoginData): Promise<AuthResponse> {
-    try {
-      console.log('Attempting login to:', `${API_BASE_URL}/Auth/login`);
-      const response = await fetch(`${API_BASE_URL}/Auth/login`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-      });
-
-      const result = await response.json();
-
-      if (!response.ok) {
-        console.error('Login Error Response:', result);
-        // Xử lý lỗi từ ASP.NET Core Identity hoặc Custom Message
-        const errorMessage = result.message || result.title || (result.errors ? Object.values(result.errors).flat().join(', ') : 'Đăng nhập thất bại');
-        throw new Error(errorMessage);
-      }
-
-      return result;
-    } catch (error: any) {
-      console.error('Fetch Login Error:', error);
-      if (error.message === 'Failed to fetch') {
-        throw new Error('Không thể kết nối đến server. Vui lòng kiểm tra backend hoặc chứng chỉ SSL (HTTPS).');
-      }
-      throw error;
+  async login(data: LoginData): Promise<ApiResponse<AuthResponseData>> {
+    const response = await fetch(`${API_BASE_URL}/Auth/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
+    const result = await response.json();
+    if (!response.ok || (result.statusCode && result.statusCode >= 400)) {
+      throw new Error(result.message || 'Đăng nhập thất bại');
     }
+    return result;
   },
 
-  logout() {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
+  async googleLogin(idToken: string): Promise<ApiResponse<AuthResponseData>> {
+    const response = await fetch(`${API_BASE_URL}/Auth/google-login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ idToken }),
+    });
+    const result = await response.json();
+    if (!response.ok || (result.statusCode && result.statusCode >= 400)) {
+      throw new Error(result.message || 'Đăng nhập Google thất bại');
+    }
+    return result;
   },
 
-  getToken() {
-    return localStorage.getItem('token');
+  async refreshToken(refreshToken: string): Promise<ApiResponse<AuthResponseData>> {
+    const response = await fetch(`${API_BASE_URL}/Auth/refresh-token`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ refreshToken }),
+    });
+    const result = await response.json();
+    if (!response.ok || (result.statusCode && result.statusCode >= 400)) {
+      throw new Error(result.message || 'Làm mới token thất bại');
+    }
+    return result;
   },
 
-  getUser() {
-    const user = localStorage.getItem('user');
-    return user ? JSON.parse(user) : null;
+  async logout(accessToken: string, refreshToken: string): Promise<ApiResponse<null>> {
+    const response = await fetch(`${API_BASE_URL}/Auth/logout`, {
+      method: 'POST',
+      headers: { 
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${accessToken}`
+      },
+      body: JSON.stringify({ refreshToken }),
+    });
+    const result = await response.json();
+    return result;
   },
 
-  saveAuthData(data: AuthResponse) {
-    localStorage.setItem('token', data.token);
+  saveAuthData(data: AuthResponseData) {
+    localStorage.setItem('accessToken', data.accessToken);
+    localStorage.setItem('refreshToken', data.refreshToken);
     localStorage.setItem('user', JSON.stringify({
       email: data.email,
       fullName: data.fullName,
-      expiration: data.expiration
+      accessTokenExpiration: data.accessTokenExpiration,
+      refreshTokenExpiration: data.refreshTokenExpiration
     }));
+  },
+
+  clearAuthData() {
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('refreshToken');
+    localStorage.removeItem('user');
+  },
+
+  getAccessToken() {
+    return localStorage.getItem('accessToken');
+  },
+
+  getRefreshToken() {
+    return localStorage.getItem('refreshToken');
+  },
+
+  getUser(): UserData | null {
+    const user = localStorage.getItem('user');
+    return user ? JSON.parse(user) : null;
   }
 };

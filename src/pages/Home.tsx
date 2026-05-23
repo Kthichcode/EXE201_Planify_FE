@@ -1,5 +1,6 @@
 import React from 'react';
-import { Sparkles, Target, Zap, Clock, CheckCircle2, ArrowRight, Layout, BarChart3, Users2 } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Sparkles, Target, Clock, CheckCircle2, ArrowRight, BarChart3, Users2 } from 'lucide-react';
 
 const Home: React.FC = () => {
   return (
@@ -25,9 +26,9 @@ const Home: React.FC = () => {
                 placeholder="VD: Thiết lập kế hoạch học tập với môn học..." 
                 className="flex-grow px-4 py-3 outline-none text-gray-700 bg-transparent"
               />
-              <button className="bg-primary hover:bg-secondary text-white px-8 py-3 rounded-lg font-bold transition-all whitespace-nowrap flex items-center gap-2">
+              <Link to="/planning" className="bg-primary hover:bg-secondary text-white px-8 py-3 rounded-lg font-bold transition-all whitespace-nowrap flex items-center gap-2">
                 Tạo kế hoạch <ArrowRight size={20} />
-              </button>
+              </Link>
             </div>
           </div>
 
@@ -228,12 +229,12 @@ const Home: React.FC = () => {
               Gia nhập cùng 10,000+ người dùng đang tối ưu hóa công việc của họ mỗi ngày với Planify.
             </p>
             <div className="flex flex-col sm:flex-row justify-center gap-4 relative z-10">
-              <button className="bg-white text-primary hover:bg-gray-50 px-10 py-4 rounded-xl font-bold text-lg transition-all shadow-xl">
+              <Link to="/pricing" className="bg-white text-primary hover:bg-gray-50 px-10 py-4 rounded-xl font-bold text-lg transition-all shadow-xl">
                 Bắt đầu miễn phí
-              </button>
-              <button className="bg-transparent border-2 border-white/30 text-white hover:bg-white/10 px-10 py-4 rounded-xl font-bold text-lg transition-all">
+              </Link>
+              <Link to="/pricing" className="bg-transparent border-2 border-white/30 text-white hover:bg-white/10 px-10 py-4 rounded-xl font-bold text-lg transition-all">
                 Xem bảng giá
-              </button>
+              </Link>
             </div>
           </div>
         </div>

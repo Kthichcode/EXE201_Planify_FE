@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
 import Navbar from './components/Navbar'
 import Home from './pages/Home'
 import Planning from './pages/Planning'
@@ -9,35 +9,26 @@ import Auth from './pages/Auth'
 import Footer from './components/Footer'
 
 function App() {
-  const [currentPage, setCurrentPage] = useState('home')
-
-  const renderPage = () => {
-    switch (currentPage) {
-      case 'home':
-        return <Home />
-      case 'planning':
-        return <Planning />
-      case 'pricing':
-        return <Pricing />
-      case 'about':
-        return <About />
-      case 'contact':
-        return <Contact />
-      case 'auth':
-        return <Auth onNavigate={setCurrentPage} />
-      default:
-        return <Home />
-    }
-  }
-
   return (
-    <div className="min-h-screen bg-surface flex flex-col">
-      <Navbar onNavigate={setCurrentPage} currentPage={currentPage} />
-      <main className="flex-grow">
-        {renderPage()}
-      </main>
-      <Footer onNavigate={setCurrentPage} />
-    </div>
+    <Router>
+      <div className="min-h-screen bg-surface flex flex-col">
+        <Navbar />
+        <main className="flex-grow">
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/home" element={<Navigate to="/" replace />} />
+            <Route path="/planning" element={<Planning />} />
+            <Route path="/pricing" element={<Pricing />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/login" element={<Auth mode="login" />} />
+            <Route path="/register" element={<Auth mode="register" />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </main>
+        <Footer />
+      </div>
+    </Router>
   )
 }
 

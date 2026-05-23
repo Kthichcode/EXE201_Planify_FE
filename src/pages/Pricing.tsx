@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { Check, Zap, Shield, Crown } from 'lucide-react';
 
 const Pricing: React.FC = () => {
@@ -15,6 +16,7 @@ const Pricing: React.FC = () => {
       ],
       icon: <Zap className="text-blue-500" />,
       buttonText: 'Bắt đầu ngay',
+      buttonLink: '/register',
       popular: false
     },
     {
@@ -30,6 +32,7 @@ const Pricing: React.FC = () => {
       ],
       icon: <Crown className="text-secondary" />,
       buttonText: 'Dùng thử 14 ngày',
+      buttonLink: '/register',
       popular: true
     },
     {
@@ -45,6 +48,7 @@ const Pricing: React.FC = () => {
       ],
       icon: <Shield className="text-accent" />,
       buttonText: 'Liên hệ kinh doanh',
+      buttonLink: '/contact',
       popular: false
     }
   ];
@@ -90,9 +94,12 @@ const Pricing: React.FC = () => {
                 <span className="text-gray-400">/tháng</span>
               </div>
               
-              <button className={`w-full py-4 rounded-xl font-bold transition-all mb-8 ${plan.popular ? 'bg-primary text-white hover:bg-secondary shadow-lg shadow-primary/20' : 'bg-gray-50 text-gray-900 hover:bg-gray-100'}`}>
+              <Link 
+                to={plan.buttonLink}
+                className={`block text-center w-full py-4 rounded-xl font-bold transition-all mb-8 ${plan.popular ? 'bg-primary text-white hover:bg-secondary shadow-lg shadow-primary/20' : 'bg-gray-50 text-gray-900 hover:bg-gray-100'}`}
+              >
                 {plan.buttonText}
-              </button>
+              </Link>
               
               <div className="space-y-4">
                 <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">Tính năng bao gồm:</p>
@@ -114,9 +121,9 @@ const Pricing: React.FC = () => {
             <h4 className="text-2xl font-bold text-gray-900 mb-2">Bạn cần một giải pháp tùy chỉnh?</h4>
             <p className="text-gray-500">Chúng tôi cung cấp các gói đặc biệt cho tổ chức giáo dục và phi lợi nhuận.</p>
           </div>
-          <button className="bg-gray-900 text-white px-8 py-4 rounded-xl font-bold hover:bg-black transition-all whitespace-nowrap">
+          <Link to="/contact" className="bg-gray-900 text-white px-8 py-4 rounded-xl font-bold hover:bg-black transition-all whitespace-nowrap">
             Nói chuyện với chúng tôi
-          </button>
+          </Link>
         </div>
       </div>
     </div>

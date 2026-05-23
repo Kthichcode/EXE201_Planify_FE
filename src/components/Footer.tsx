@@ -1,23 +1,20 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { Globe, MessageCircle, Mail } from 'lucide-react';
 
-interface FooterProps {
-  onNavigate: (page: string) => void;
-}
-
-const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
+const Footer: React.FC = () => {
   return (
     <footer className="bg-white border-t border-gray-100 pt-16 pb-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
           {/* Brand */}
           <div className="col-span-1 md:col-span-1">
-            <div className="flex items-center space-x-2 mb-6 cursor-pointer" onClick={() => onNavigate('home')}>
+            <Link to="/" className="flex items-center space-x-2 mb-6 cursor-pointer">
               <div className="w-8 h-8 bg-gradient-ai rounded-lg flex items-center justify-center">
                 <span className="text-white font-bold text-xl">A</span>
               </div>
               <span className="text-2xl font-black tracking-tighter text-gray-900">PLANIFY</span>
-            </div>
+            </Link>
             <p className="text-gray-500 text-sm leading-relaxed mb-6">
               Nền tảng lập kế hoạch thông minh sử dụng trí tuệ nhân tạo để biến ý tưởng thành hành động cụ thể.
             </p>
@@ -32,9 +29,9 @@ const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
           <div>
             <h4 className="text-sm font-bold text-gray-900 uppercase tracking-wider mb-6">Sản phẩm</h4>
             <ul className="space-y-4">
-              <li><button onClick={() => onNavigate('home')} className="text-gray-500 hover:text-primary text-sm transition-colors">Trang chủ</button></li>
-              <li><button onClick={() => onNavigate('planning')} className="text-gray-500 hover:text-primary text-sm transition-colors">Tính năng AI</button></li>
-              <li><button onClick={() => onNavigate('pricing')} className="text-gray-500 hover:text-primary text-sm transition-colors">Bảng giá</button></li>
+              <li><Link to="/" className="text-gray-500 hover:text-primary text-sm transition-colors">Trang chủ</Link></li>
+              <li><Link to="/planning" className="text-gray-500 hover:text-primary text-sm transition-colors">Tính năng AI</Link></li>
+              <li><Link to="/pricing" className="text-gray-500 hover:text-primary text-sm transition-colors">Bảng giá</Link></li>
               <li><a href="#" className="text-gray-500 hover:text-primary text-sm transition-colors">Tích hợp</a></li>
             </ul>
           </div>
@@ -43,10 +40,10 @@ const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
           <div>
             <h4 className="text-sm font-bold text-gray-900 uppercase tracking-wider mb-6">Công ty</h4>
             <ul className="space-y-4">
-              <li><button onClick={() => onNavigate('about')} className="text-gray-500 hover:text-primary text-sm transition-colors">Về chúng tôi</button></li>
+              <li><Link to="/about" className="text-gray-500 hover:text-primary text-sm transition-colors">Về chúng tôi</Link></li>
               <li><a href="#" className="text-gray-500 hover:text-primary text-sm transition-colors">Blog</a></li>
               <li><a href="#" className="text-gray-500 hover:text-primary text-sm transition-colors">Tuyển dụng</a></li>
-              <li><a href="#" className="text-gray-500 hover:text-primary text-sm transition-colors">Liên hệ</a></li>
+              <li><Link to="/contact" className="text-gray-500 hover:text-primary text-sm transition-colors">Liên hệ</Link></li>
             </ul>
           </div>
 

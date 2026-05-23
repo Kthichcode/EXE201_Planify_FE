@@ -1,62 +1,76 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { authService, AuthResponse } from '../services/authService';
+import { authService, UserData, AuthResponseData, ApiResponse } from '../services/authService';
 
 interface AuthContextType {
-  user: any;
-  token: string | null;
+  user: UserData | null;
+  accessToken: string | null;
   login: (data: any) => Promise<void>;
   register: (data: any) => Promise<void>;
-  logout: () => void;
+  loginWithGoogle: (idToken: string) => Promise<void>;
+  logout: () => Promise<void>;
   isLoading: boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [user, setUser] = useState<any>(null);
-  const [token, setToken] = useState<string | null>(null);
+  const [user, setUser] = useState<UserData | null>(null);
+  const [accessToken, setAccessToken] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const savedToken = authService.getToken();
+    const savedToken = authService.getAccessToken();
     const savedUser = authService.getUser();
     if (savedToken && savedUser) {
-      setToken(savedToken);
+      setAccessToken(savedToken);
       setUser(savedUser);
     }
     setIsLoading(false);
   }, []);
 
+  const handleAuthSuccess = (response: ApiResponse<AuthResponseData>) => {
+    const { data } = response;
+    authService.saveAuthData(data);
+    setUser({
+      email: data.email,
+      fullName: data.fullName,
+      accessTokenExpiration: data.accessTokenExpiration,
+      refreshTokenExpiration: data.refreshTokenExpiration,
+    });
+    setAccessToken(data.accessToken);
+  };
+
   const login = async (data: any) => {
     const response = await authService.login(data);
-    authService.saveAuthData(response);
-    setUser({
-      email: response.email,
-      fullName: response.fullName,
-      expiration: response.expiration,
-    });
-    setToken(response.token);
+    handleAuthSuccess(response);
   };
 
   const register = async (data: any) => {
     const response = await authService.register(data);
-    authService.saveAuthData(response);
-    setUser({
-      email: response.email,
-      fullName: response.fullName,
-      expiration: response.expiration,
-    });
-    setToken(response.token);
+    handleAuthSuccess(response);
   };
 
-  const logout = () => {
-    authService.logout();
+  const loginWithGoogle = async (idToken: string) => {
+    const response = await authService.googleLogin(idToken);
+    handleAuthSuccess(response);
+  };
+
+  const logout = async () => {
+    const refreshToken = authService.getRefreshToken();
+    if (accessToken && refreshToken) {
+      try {
+        await authService.logout(accessToken, refreshToken);
+      } catch (error) {
+        console.error('Logout error:', error);
+      }
+    }
+    authService.clearAuthData();
     setUser(null);
-    setToken(null);
+    setAccessToken(null);
   };
 
   return (
-    <AuthContext.Provider value={{ user, token, login, register, logout, isLoading }}>
+    <AuthContext.Provider value={{ user, accessToken, login, register, loginWithGoogle, logout, isLoading }}>
       {children}
     </AuthContext.Provider>
   );

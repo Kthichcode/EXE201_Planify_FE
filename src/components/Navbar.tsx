@@ -1,76 +1,60 @@
 import React from 'react';
+import { NavLink, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { LogOut, User as UserIcon } from 'lucide-react';
 
-interface NavbarProps {
-  onNavigate: (page: string) => void;
-  currentPage: string;
-}
-
-const Navbar: React.FC<NavbarProps> = ({ onNavigate, currentPage }) => {
+const Navbar: React.FC = () => {
   const { user, logout } = useAuth();
+
+  const navLinkStyles = ({ isActive }: { isActive: boolean }) => 
+    `text-sm font-medium transition-colors ${isActive ? 'text-primary border-b-2 border-primary pb-1' : 'text-gray-600 hover:text-primary'}`;
 
   return (
     <nav className="fixed top-0 left-0 right-0 bg-white/80 backdrop-blur-md z-50 border-b border-gray-100">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
-          <div className="flex items-center space-x-2 cursor-pointer" onClick={() => onNavigate('home')}>
+          <Link to="/" className="flex items-center space-x-2 cursor-pointer">
             <img src="/logo hệ thống planify.png" alt="Planify Logo" className="h-8 w-auto object-contain" />
             <img src="/logo-text.png" alt="PLANIFY" className="h-4 w-auto object-contain mt-1" />
-          </div>
+          </Link>
 
           {/* Nav Links */}
           <div className="hidden md:flex items-center space-x-8">
-            <button 
-              onClick={() => onNavigate('home')}
-              className={`text-sm font-medium transition-colors ${currentPage === 'home' ? 'text-primary border-b-2 border-primary pb-1' : 'text-gray-600 hover:text-primary'}`}
-            >
+            <NavLink to="/" end className={navLinkStyles}>
               Trang chủ
-            </button>
-            <button 
-              onClick={() => onNavigate('planning')}
-              className={`text-sm font-medium transition-colors ${currentPage === 'planning' ? 'text-primary border-b-2 border-primary pb-1' : 'text-gray-600 hover:text-primary'}`}
-            >
+            </NavLink>
+            <NavLink to="/planning" className={navLinkStyles}>
               Kế hoạch
-            </button>
-            <button 
-              onClick={() => onNavigate('pricing')}
-              className={`text-sm font-medium transition-colors ${currentPage === 'pricing' ? 'text-primary border-b-2 border-primary pb-1' : 'text-gray-600 hover:text-primary'}`}
-            >
+            </NavLink>
+            <NavLink to="/pricing" className={navLinkStyles}>
               Các gói
-            </button>
-            <button 
-              onClick={() => onNavigate('about')}
-              className={`text-sm font-medium transition-colors ${currentPage === 'about' ? 'text-primary border-b-2 border-primary pb-1' : 'text-gray-600 hover:text-primary'}`}
-            >
+            </NavLink>
+            <NavLink to="/about" className={navLinkStyles}>
               Về chúng tôi
-            </button>
-            <button 
-              onClick={() => onNavigate('contact')}
-              className={`text-sm font-medium transition-colors ${currentPage === 'contact' ? 'text-primary border-b-2 border-primary pb-1' : 'text-gray-600 hover:text-primary'}`}
-            >
+            </NavLink>
+            <NavLink to="/contact" className={navLinkStyles}>
               Liên hệ
-            </button>
+            </NavLink>
           </div>
 
           {/* Action Buttons */}
           <div className="flex items-center space-x-4">
             {!user ? (
               <>
-                <button 
-                  onClick={() => onNavigate('pricing')}
+                <Link 
+                  to="/pricing"
                   className="bg-primary hover:bg-secondary text-white px-5 py-2 rounded-md text-sm font-semibold transition-all shadow-md shadow-primary/20"
                 >
                   Dùng thử miễn phí
-                </button>
+                </Link>
                 <div className="h-6 w-px bg-gray-200"></div>
-                <button 
-                  onClick={() => onNavigate('auth')}
-                  className={`text-sm font-medium transition-colors ${currentPage === 'auth' ? 'text-primary' : 'text-gray-700 hover:text-primary'}`}
+                <NavLink 
+                  to="/login"
+                  className={({ isActive }) => `text-sm font-medium transition-colors ${isActive ? 'text-primary' : 'text-gray-700 hover:text-primary'}`}
                 >
                   Đăng nhập
-                </button>
+                </NavLink>
               </>
             ) : (
               <div className="flex items-center gap-4">
