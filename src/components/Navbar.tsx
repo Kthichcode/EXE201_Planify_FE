@@ -58,6 +58,16 @@ const Navbar: React.FC = () => {
               </>
             ) : (
               <div className="flex items-center gap-4">
+                
+                {/* ===== NÚT VÀO TRANG QUẢN TRỊ ===== */}
+                <Link 
+                  to="/admin" 
+                  className="bg-gray-900 hover:bg-black text-white px-4 py-2 rounded-md text-sm font-semibold transition-all shadow-md"
+                >
+                  Trang Quản Trị
+                </Link>
+                {/* ================================== */}
+
                 <div className="flex items-center gap-2 px-3 py-1 bg-gray-50 rounded-full border border-gray-100">
                   <div className="w-6 h-6 bg-primary/10 rounded-full flex items-center justify-center">
                     <UserIcon size={14} className="text-primary" />
