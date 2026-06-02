@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { 
-  Target, Calendar, BarChart, Sparkles, RefreshCw, Save, 
+  Target, Calendar, Sparkles, RefreshCw, Save, 
   ListTree, PlusCircle, ChevronRight, Shield, Globe, 
   Info, Clock, Plus, Trash2, Layout
 } from 'lucide-react';
@@ -8,6 +8,7 @@ import { Plan, CreatePlanDto, CreatePlanTaskDto, TaskPriority } from '../types/p
 import { planService } from '../services/planService';
 import { aiService } from '../services/aiService';
 import { useNavigate } from 'react-router-dom';
+import { useToast } from '../context/ToastContext';
 
 interface LocalTask extends Omit<CreatePlanTaskDto, 'parentTaskId' | 'startDate' | 'dueDate'> {
   localId: string;
@@ -18,6 +19,7 @@ interface LocalTask extends Omit<CreatePlanTaskDto, 'parentTaskId' | 'startDate'
 
 const Planning: React.FC = () => {
   const navigate = useNavigate();
+  const { showToast } = useToast();
   const [activeMode, setActiveMode] = useState<'ai' | 'manual'>('ai');
   const [manualStep, setManualStep] = useState<1 | 2>(1);
   const [createdPlan, setCreatedPlan] = useState<Plan | null>(null);
@@ -80,7 +82,7 @@ const Planning: React.FC = () => {
 
   const handleAiGenerate = async () => {
     if (!goal || goal.length < 10) {
-      alert('Vui lòng mô tả mục tiêu chi tiết hơn (tối thiểu 10 ký tự)');
+      showToast('Vui lòng mô tả mục tiêu chi tiết hơn (tối thiểu 10 ký tự)', 'warning');
       return;
     }
 
@@ -90,7 +92,7 @@ const Planning: React.FC = () => {
       setAiGeneratedPlan(response.plan);
       setShowAiPreview(true);
     } catch (error: any) {
-      alert('Lỗi khi AI tạo kế hoạch: ' + error.message);
+      showToast('Lỗi khi AI tạo kế hoạch: ' + error.message, 'error');
     } finally {
       setIsAiGenerating(false);
     }
@@ -104,7 +106,7 @@ const Planning: React.FC = () => {
       localStorage.setItem('currentPlanId', aiGeneratedPlan.id);
       navigate(`/plans/${aiGeneratedPlan.id}`);
     } catch (error: any) {
-      alert('Lỗi khi xác nhận kế hoạch: ' + error.message);
+      showToast('Lỗi khi xác nhận kế hoạch: ' + error.message, 'error');
     } finally {
       setIsSubmitting(false);
     }
@@ -127,7 +129,7 @@ const Planning: React.FC = () => {
 
   const handleCreatePlanShell = async () => {
     if (!planData.title) {
-      alert('Vui lòng nhập tên kế hoạch');
+      showToast('Vui lòng nhập tên kế hoạch', 'warning');
       return;
     }
     
@@ -150,7 +152,7 @@ const Planning: React.FC = () => {
       setCreatedPlan(plan);
       setManualStep(2);
     } catch (error: any) {
-      alert('Lỗi: ' + error.message);
+      showToast('Lỗi: ' + error.message, 'error');
     } finally {
       setIsSubmitting(false);
     }
@@ -158,7 +160,7 @@ const Planning: React.FC = () => {
 
   const handleSaveTasks = async () => {
     if (localTasks.length === 0) {
-      alert('Hãy thêm ít nhất một nhiệm vụ');
+      showToast('Hãy thêm ít nhất một nhiệm vụ', 'warning');
       return;
     }
 
@@ -199,10 +201,10 @@ const Planning: React.FC = () => {
         }
       }
 
-      alert('Tất cả nhiệm vụ đã được lưu thành công!');
+      showToast('Tất cả nhiệm vụ đã được lưu thành công!', 'success');
       navigate(`/plans/${planId}`);
     } catch (error: any) {
-      alert('Lỗi khi lưu nhiệm vụ: ' + error.message);
+      showToast('Lỗi khi lưu nhiệm vụ: ' + error.message, 'error');
     } finally {
       setIsSubmitting(false);
     }

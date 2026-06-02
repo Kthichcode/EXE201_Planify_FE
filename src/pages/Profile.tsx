@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { 
   User, 
-  Mail, 
   CreditCard, 
   Zap,
   Lock,
@@ -17,8 +16,6 @@ import { Link } from 'react-router-dom';
 const Profile: React.FC = () => {
   const { user, logout } = useAuth();
   const [subscription, setSubscription] = useState<UserSubscription | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-
   useEffect(() => {
     const fetchSubscription = async () => {
       try {
@@ -26,8 +23,6 @@ const Profile: React.FC = () => {
         setSubscription(response.data);
       } catch (error) {
         console.error('Error fetching subscription:', error);
-      } finally {
-        setIsLoading(false);
       }
     };
 

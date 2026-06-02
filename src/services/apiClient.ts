@@ -1,0 +1,124 @@
+import { getAccessToken, getRefreshToken, saveAuthData, clearAuthData } from '../utils/token';
+
+const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || 'https://localhost:7031/api').replace(/\/$/, '');
+
+interface RequestOptions extends RequestInit {
+  skipAuth?: boolean;
+}
+
+let isRefreshing = false;
+let refreshSubscribers: ((token: string) => void)[] = [];
+
+const subscribeTokenRefresh = (cb: (token: string) => void) => {
+  refreshSubscribers.push(cb);
+};
+
+const onRefreshed = (token: string) => {
+  refreshSubscribers.forEach((cb) => cb(token));
+  refreshSubscribers = [];
+};
+
+export const apiClient = async (endpoint: string, options: RequestOptions = {}) => {
+  const { skipAuth = false, headers = {}, ...restOptions } = options;
+
+  const cleanEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
+  const url = endpoint.startsWith('http') ? endpoint : `${API_BASE_URL}${cleanEndpoint}`;
+
+  const defaultHeaders: Record<string, string> = {
+    'Content-Type': 'application/json',
+  };
+
+  if (!skipAuth) {
+    const token = getAccessToken();
+    if (token) {
+      defaultHeaders['Authorization'] = `Bearer ${token}`;
+    }
+  }
+
+  const mergedHeaders: Record<string, string> = {
+    ...defaultHeaders,
+    ...(headers as Record<string, string>),
+  };
+
+  const executeRequest = async (): Promise<any> => {
+    const response = await fetch(url, {
+      ...restOptions,
+      headers: mergedHeaders,
+    });
+
+    if (response.status === 401 && !skipAuth) {
+      const rToken = getRefreshToken();
+      if (!rToken) {
+        clearAuthData();
+        throw new Error('Unauthorized');
+      }
+
+      if (!isRefreshing) {
+        isRefreshing = true;
+        try {
+          const refreshRes = await fetch(`${API_BASE_URL}/Auth/refresh-token`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ refreshToken: rToken }),
+          });
+
+          if (!refreshRes.ok) {
+            throw new Error('Refresh failed');
+          }
+
+          const refreshData = await refreshRes.json();
+          const authData = refreshData.data || refreshData;
+          saveAuthData(authData);
+          isRefreshing = false;
+          onRefreshed(authData.accessToken);
+        } catch (err) {
+          isRefreshing = false;
+          clearAuthData();
+          window.dispatchEvent(new Event('storage')); // Notify components to reload/logout
+          throw new Error('Unauthorized');
+        }
+      }
+
+      return new Promise((resolve, reject) => {
+        subscribeTokenRefresh((newToken) => {
+          mergedHeaders['Authorization'] = `Bearer ${newToken}`;
+          fetch(url, {
+            ...restOptions,
+            headers: mergedHeaders,
+          })
+            .then(async (res) => {
+              const resData = await res.json().catch(() => ({}));
+              if (!res.ok) {
+                reject(new Error(resData.message || `Request failed with status ${res.status}`));
+              } else {
+                resolve(resData.data !== undefined ? resData : { data: resData });
+              }
+            })
+            .catch(reject);
+        });
+      });
+    }
+
+    if (response.status === 405) {
+      throw new Error('Method Not Allowed');
+    }
+
+    const contentType = response.headers.get('content-type');
+    let resData: any;
+    if (contentType && contentType.includes('application/json')) {
+      resData = await response.json().catch(() => ({}));
+    } else {
+      resData = await response.text();
+    }
+
+    if (!response.ok) {
+      const errorMsg = resData?.message || (typeof resData === 'string' ? resData : null) || `Request failed with status ${response.status}`;
+      throw new Error(errorMsg);
+    }
+
+    // Keep response format consistency (like returning ApiResponse<T>)
+    return resData;
+  };
+
+  return executeRequest();
+};

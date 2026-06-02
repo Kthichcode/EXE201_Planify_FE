@@ -15,7 +15,6 @@ import AdminLayout from './components/admin/AdminLayout'
 import AdminDashboard from './pages/admin/AdminDashboard'
 import AdminSubscriptions from './pages/admin/AdminSubscriptions'
 import AIChat from './components/AIChat'
-import { Sparkles } from 'lucide-react'
 import { useState } from 'react'
 
 

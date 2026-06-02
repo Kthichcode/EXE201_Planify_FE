@@ -1,12 +1,14 @@
-const API_BASE_URL = 'https://localhost:7031/api';
+import { apiClient } from './apiClient';
+import { 
+  getAccessToken, 
+  getRefreshToken, 
+  getUser, 
+  saveAuthData, 
+  clearAuthData, 
+  UserData 
+} from '../utils/token';
 
-export interface UserData {
-  email: string;
-  fullName: string;
-  role?: string;
-  accessTokenExpiration: string;
-  refreshTokenExpiration: string;
-}
+export type { UserData };
 
 export interface AuthResponseData {
   accessToken: string;
@@ -37,109 +39,48 @@ export interface LoginData {
 
 export const authService = {
   async register(data: RegisterData): Promise<ApiResponse<AuthResponseData>> {
-    const response = await fetch(`${API_BASE_URL}/Auth/register`, {
+    return apiClient('/Auth/register', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
+      skipAuth: true,
     });
-    const result = await response.json();
-    if (!response.ok || (result.statusCode && result.statusCode >= 400)) {
-      throw new Error(result.message || 'Đăng ký thất bại');
-    }
-    return result;
   },
 
   async login(data: LoginData): Promise<ApiResponse<AuthResponseData>> {
-    const response = await fetch(`${API_BASE_URL}/Auth/login`, {
+    return apiClient('/Auth/login', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
+      skipAuth: true,
     });
-    const result = await response.json();
-    if (!response.ok || (result.statusCode && result.statusCode >= 400)) {
-      throw new Error(result.message || 'Đăng nhập thất bại');
-    }
-    return result;
   },
 
   async googleLogin(idToken: string): Promise<ApiResponse<AuthResponseData>> {
-    const response = await fetch(`${API_BASE_URL}/Auth/google-login`, {
+    return apiClient('/Auth/google-login', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ idToken }),
+      skipAuth: true,
     });
-    const result = await response.json();
-    if (!response.ok || (result.statusCode && result.statusCode >= 400)) {
-      throw new Error(result.message || 'Đăng nhập Google thất bại');
-    }
-    return result;
   },
 
   async refreshToken(refreshToken: string): Promise<ApiResponse<AuthResponseData>> {
-    const response = await fetch(`${API_BASE_URL}/Auth/refresh-token`, {
+    return apiClient('/Auth/refresh-token', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ refreshToken }),
+      skipAuth: true,
+    });
+  },
+
+  async logout(_accessToken: string, refreshToken: string): Promise<ApiResponse<null>> {
+    return apiClient('/Auth/logout', {
+      method: 'POST',
       body: JSON.stringify({ refreshToken }),
     });
-    const result = await response.json();
-    if (!response.ok || (result.statusCode && result.statusCode >= 400)) {
-      throw new Error(result.message || 'Làm mới token thất bại');
-    }
-    return result;
   },
 
-  async logout(accessToken: string, refreshToken: string): Promise<ApiResponse<null>> {
-    const response = await fetch(`${API_BASE_URL}/Auth/logout`, {
-      method: 'POST',
-      headers: { 
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${accessToken}`
-      },
-      body: JSON.stringify({ refreshToken }),
-    });
-    const result = await response.json();
-    return result;
-  },
-
-  saveAuthData(data: AuthResponseData) {
-    // Decode role from JWT if not provided in response
-    let role = data.role;
-    if (!role && data.accessToken) {
-      try {
-        const payload = JSON.parse(atob(data.accessToken.split('.')[1]));
-        role = payload['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'] || payload['role'];
-      } catch (e) {
-        console.error('Error decoding token role:', e);
-      }
-    }
-
-    localStorage.setItem('accessToken', data.accessToken);
-    localStorage.setItem('refreshToken', data.refreshToken);
-    localStorage.setItem('user', JSON.stringify({
-      email: data.email,
-      fullName: data.fullName,
-      role: role,
-      accessTokenExpiration: data.accessTokenExpiration,
-      refreshTokenExpiration: data.refreshTokenExpiration
-    }));
-  },
-
-  clearAuthData() {
-    localStorage.removeItem('accessToken');
-    localStorage.removeItem('refreshToken');
-    localStorage.removeItem('user');
-  },
-
-  getAccessToken() {
-    return localStorage.getItem('accessToken');
-  },
-
-  getRefreshToken() {
-    return localStorage.getItem('refreshToken');
-  },
-
-  getUser(): UserData | null {
-    const user = localStorage.getItem('user');
-    return user ? JSON.parse(user) : null;
-  }
+  // Re-export token utilities to maintain backward compatibility
+  saveAuthData,
+  clearAuthData,
+  getAccessToken,
+  getRefreshToken,
+  getUser,
 };

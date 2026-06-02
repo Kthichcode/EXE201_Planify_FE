@@ -1,11 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { NavLink, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useClickOutside } from '../hooks/useClickOutside';
 import { LogOut, User as UserIcon, ChevronDown, Layout, UserCircle } from 'lucide-react';
 
 const Navbar: React.FC = () => {
   const { user, logout } = useAuth();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useClickOutside(dropdownRef, () => setIsDropdownOpen(false));
 
   const navLinkStyles = ({ isActive }: { isActive: boolean }) => 
     `text-sm font-medium transition-colors ${isActive ? 'text-primary border-b-2 border-primary pb-1' : 'text-gray-600 hover:text-primary'}`;
@@ -48,10 +52,9 @@ const Navbar: React.FC = () => {
                 </NavLink>
               </>
             ) : (
-              <div className="relative">
+              <div className="relative" ref={dropdownRef}>
                 <button 
                   onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                  onBlur={() => setTimeout(() => setIsDropdownOpen(false), 200)}
                   className="flex items-center gap-3 px-4 py-1.5 bg-gray-50 hover:bg-white rounded-full border border-gray-100 hover:border-primary/20 hover:shadow-lg hover:shadow-primary/5 transition-all group"
                 >
                   <div className="w-7 h-7 bg-primary/10 rounded-full flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-all">

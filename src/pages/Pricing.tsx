@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Check, Zap, Shield, Crown, Loader2, HelpCircle, ChevronDown, ChevronUp, Lock } from 'lucide-react';
+import { Check, Shield, Loader2, HelpCircle, ChevronDown, ChevronUp, Lock } from 'lucide-react';
 import { subscriptionService } from '../services/subscriptionService';
 import { SubscriptionPlan } from '../types/subscription.types';
 import { useAuth } from '../context/AuthContext';
@@ -83,7 +83,7 @@ const Pricing: React.FC = () => {
           </p>
 
           {/* Billing Toggle */}
-          {/* <div className="flex justify-center items-center gap-4 bg-white p-1.5 rounded-2xl shadow-xl shadow-gray-200/50 border border-gray-100 w-fit mx-auto mb-12">
+          <div className="flex justify-center items-center gap-4 bg-white p-1.5 rounded-2xl shadow-xl shadow-gray-200/50 border border-gray-100 w-fit mx-auto mb-12">
             <button 
               onClick={() => setBillingCycle('monthly')}
               className={`px-6 py-2.5 rounded-xl text-sm font-bold transition-all ${billingCycle === 'monthly' ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'text-gray-500 hover:text-gray-900'}`}
@@ -97,7 +97,7 @@ const Pricing: React.FC = () => {
               Thanh toán năm
               <span className="bg-accent text-white text-[10px] px-2 py-0.5 rounded-full">-20%</span>
             </button>
-          </div> */}
+          </div>
         </div>
 
         {isLoading ? (
@@ -116,7 +116,6 @@ const Pricing: React.FC = () => {
               const featuresList = plan.features.split(',').map(f => f.trim()).filter(f => f);
               const isFree = plan.price === 0;
               const isPro = plan.price === 69000;
-              const isElite = plan.price === 129000;
               
               const displayPrice = billingCycle === 'yearly' ? plan.price * 12 * 0.8 : plan.price;
 

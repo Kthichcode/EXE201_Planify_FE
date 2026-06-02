@@ -1,14 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { 
   Plus, 
   Search, 
   Filter, 
   Edit2, 
   Trash2, 
-  MoreVertical,
   CheckCircle2,
   XCircle,
-  AlertCircle,
   CreditCard
 } from 'lucide-react';
 import { subscriptionService } from '../../services/subscriptionService';
@@ -43,7 +41,7 @@ const AdminSubscriptions: React.FC = () => {
     isActive: true,
   });
 
-  const fetchPlans = async () => {
+  const fetchPlans = useCallback(async () => {
     try {
       setIsLoading(true);
       const response = await subscriptionService.adminGetAllPlans();
@@ -54,11 +52,11 @@ const AdminSubscriptions: React.FC = () => {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [showToast]);
 
   useEffect(() => {
     fetchPlans();
-  }, []);
+  }, [fetchPlans]);
 
   const handleOpenModal = (plan?: SubscriptionPlan) => {
     if (plan) {

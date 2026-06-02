@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Send, X, Sparkles, User, Bot, RefreshCw } from 'lucide-react';
+import { Send, X, User, RefreshCw } from 'lucide-react';
 import { aiService, ChatMessage } from '../services/aiService';
 
 interface AIChatProps {
@@ -50,8 +50,7 @@ const AIChat: React.FC<AIChatProps> = ({ isOpen, onClose, initialMessage }) => {
       };
       setMessages(prev => [...prev, errorMsg]);
     } finally {
-      setIsLoading(true);
-      setTimeout(() => setIsLoading(false), 500);
+      setIsLoading(false);
     }
   };
 
