@@ -1,10 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { 
-  User, 
-  CreditCard, 
   Zap,
   Lock,
-  LogOut,
   ArrowLeft,
   Check
 } from 'lucide-react';
@@ -16,6 +13,7 @@ import { Link } from 'react-router-dom';
 const Profile: React.FC = () => {
   const { user, logout } = useAuth();
   const [subscription, setSubscription] = useState<UserSubscription | null>(null);
+
   useEffect(() => {
     const fetchSubscription = async () => {
       try {
@@ -33,97 +31,104 @@ const Profile: React.FC = () => {
 
   if (!user) return null;
 
+  const planName = subscription?.planName || subscription?.PlanName || subscription?.plan?.name || 'Gói Miễn Phí';
+  const aiRequestsLimit = subscription?.aiRequestsLimit !== undefined ? subscription?.aiRequestsLimit : (subscription?.AiRequestsLimit !== undefined ? subscription?.AiRequestsLimit : (subscription?.plan?.aiRequestsLimit || 10));
+  const aiRequestsUsed = subscription?.aiRequestsUsed || 0;
+  const storageLimitMb = subscription?.storageLimitMb !== undefined ? subscription?.storageLimitMb : (subscription?.StorageLimitMb !== undefined ? subscription?.StorageLimitMb : (subscription?.plan?.storageLimitMb || 100));
+  const maxPlans = subscription?.maxPlans !== undefined ? subscription?.maxPlans : (subscription?.MaxPlans !== undefined ? subscription?.MaxPlans : (subscription?.plan?.maxPlans || 5));
+
   return (
-    <div className="pt-24 pb-20 min-h-screen bg-[#FDFDFD] flex items-center justify-center font-sans">
-      {/* Centered Modal-like Card */}
-      <div className="w-full max-w-xl bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden animate-in fade-in zoom-in-95 duration-300">
+    <div className="pt-24 pb-20 min-h-screen bg-white flex items-center justify-center font-sans px-4">
+      {/* Strictly Monochrome Card */}
+      <div className="w-full max-w-xl bg-white border border-neutral-900 rounded-none overflow-hidden p-8 md:p-12 space-y-8 animate-in fade-in duration-300">
         
         {/* Header Section */}
-        <div className="p-8 border-b border-gray-100 bg-gray-50/30 flex justify-between items-center">
-          <div className="flex items-center gap-4">
-            <div className="w-16 h-16 rounded-full border border-gray-200 bg-white flex items-center justify-center text-gray-300">
-              <User size={32} />
-            </div>
-            <div>
-              <h1 className="text-xl font-bold text-black leading-tight">{user.fullName}</h1>
-              <p className="text-sm text-gray-500 font-medium">{user.email}</p>
-            </div>
+        <div className="flex justify-between items-start border-b border-neutral-950 pb-8">
+          <div className="space-y-2">
+            <h1 className="text-2xl font-black tracking-tight text-neutral-950 uppercase">Hồ sơ của tôi</h1>
+            <p className="text-[10px] font-bold text-neutral-500 tracking-wider uppercase">Thông tin tài khoản chính thức</p>
           </div>
-          <Link to="/" className="p-2 hover:bg-gray-100 rounded-lg transition-colors text-gray-400 hover:text-black">
-             <ArrowLeft size={20} />
+          <Link to="/" className="p-2 border border-neutral-950 hover:bg-neutral-950 hover:text-white transition-all text-neutral-950">
+            <ArrowLeft size={16} />
           </Link>
         </div>
 
-        {/* Content Body */}
-        <div className="p-8 space-y-10">
-          
-          {/* Highlighted Current Plan */}
-          <div>
-            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-4">Gói dịch vụ đang dùng</p>
-            <div className="p-6 bg-black text-white rounded-xl flex items-center justify-between shadow-xl shadow-black/10">
-              <div className="flex items-center gap-4">
-                <div className="w-10 h-10 bg-white/10 rounded-lg flex items-center justify-center">
-                  <CreditCard size={20} className="text-white" />
-                </div>
-                <div>
-                  <h3 className="text-lg font-bold leading-tight">{subscription?.plan?.name || 'Gói Miễn Phí'}</h3>
-                  <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Trạng thái: Đang hoạt động</p>
-                </div>
-              </div>
-              <div className="flex flex-col items-end">
-                 <span className="text-xs font-bold bg-white/20 px-3 py-1 rounded-full border border-white/10">Gói hiện tại</span>
-              </div>
+        {/* Info Grid */}
+        <div className="space-y-6">
+          {/* User Details */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-neutral-200 pb-6">
+            <div className="space-y-1">
+              <span className="text-[9px] font-black text-neutral-400 uppercase tracking-widest">Họ và tên</span>
+              <p className="text-sm font-black text-neutral-950">{user.fullName}</p>
             </div>
-            <div className="mt-4 flex justify-between items-center text-sm font-medium text-gray-500 px-1">
-              <span>Hạn mức AI: <strong>{subscription?.aiRequestsUsed || 0}/{subscription?.plan?.aiRequestsLimit || 10}</strong></span>
-              <Link to="/pricing" className="text-black font-bold hover:underline">Nâng cấp gói →</Link>
+            <div className="space-y-1 sm:text-right">
+              <span className="text-[9px] font-black text-neutral-400 uppercase tracking-widest">Địa chỉ email</span>
+              <p className="text-sm font-black text-neutral-950">{user.email}</p>
+            </div>
+          </div>
+
+          {/* Current Plan */}
+          <div className="space-y-4 border-b border-neutral-200 pb-6">
+            <span className="text-[9px] font-black text-neutral-400 uppercase tracking-widest block">Gói dịch vụ đang dùng</span>
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div>
+                <p className="text-lg font-black text-neutral-950 uppercase">{planName}</p>
+                <p className="text-[9px] text-neutral-500 font-bold uppercase tracking-wider mt-1">Trạng thái: Hoạt động</p>
+              </div>
+              <Link 
+                to="/pricing" 
+                className="px-4 py-2 border border-neutral-950 text-[10px] font-black uppercase tracking-widest hover:bg-neutral-950 hover:text-white transition-all text-center"
+              >
+                Nâng cấp gói →
+              </Link>
             </div>
           </div>
 
           {/* Special Privileges List */}
-          <div className="grid grid-cols-2 gap-4">
-            <div className="p-5 border border-gray-100 rounded-xl">
-               <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Lưu trữ</p>
-               <p className="text-sm font-bold text-black">{subscription?.plan?.storageLimitMb || 100} MB Dung lượng</p>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 border-b border-neutral-200 pb-6">
+            <div className="space-y-1">
+              <span className="text-[9px] font-black text-neutral-400 uppercase tracking-widest">Hạn mức AI</span>
+              <p className="text-sm font-black text-neutral-950">{aiRequestsUsed} / {aiRequestsLimit}</p>
             </div>
-            <div className="p-5 border border-gray-100 rounded-xl">
-               <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Kế hoạch</p>
-               <p className="text-sm font-bold text-black">Tối đa {subscription?.plan?.maxPlans || 5} Bản kế hoạch</p>
+            <div className="space-y-1">
+              <span className="text-[9px] font-black text-neutral-400 uppercase tracking-widest">Dung lượng</span>
+              <p className="text-sm font-black text-neutral-950">{storageLimitMb} MB</p>
+            </div>
+            <div className="space-y-1">
+              <span className="text-[9px] font-black text-neutral-400 uppercase tracking-widest">Kế hoạch tối đa</span>
+              <p className="text-sm font-black text-neutral-950">{maxPlans}</p>
             </div>
           </div>
 
-          {/* Quick Actions List */}
-          <div className="space-y-1">
-            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-4">Cài đặt tài khoản</p>
-            <button className="w-full flex items-center justify-between p-4 hover:bg-gray-50 rounded-xl transition-all border border-transparent hover:border-gray-100 group">
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center text-gray-400 group-hover:text-black transition-colors">
-                  <Lock size={16} />
+          {/* Account Actions */}
+          <div className="space-y-2">
+            <span className="text-[9px] font-black text-neutral-400 uppercase tracking-widest block mb-1">Cài đặt tài khoản</span>
+            <div className="space-y-2">
+              <button className="w-full flex items-center justify-between p-3.5 border border-neutral-200 hover:border-neutral-950 transition-all hover:bg-neutral-50 group rounded-none">
+                <div className="flex items-center gap-3">
+                  <Lock size={14} className="text-neutral-500 group-hover:text-neutral-950 transition-colors" />
+                  <span className="text-xs font-black text-neutral-950 uppercase tracking-wider">Thay đổi mật khẩu</span>
                 </div>
-                <span className="text-sm font-bold text-gray-700">Thay đổi mật khẩu</span>
-              </div>
-              <Check size={14} className="text-gray-300 opacity-0 group-hover:opacity-100 transition-opacity" />
-            </button>
-            <button className="w-full flex items-center justify-between p-4 hover:bg-gray-50 rounded-xl transition-all border border-transparent hover:border-gray-100 group">
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center text-gray-400 group-hover:text-black transition-colors">
-                  <Zap size={16} />
+                <Check size={12} className="text-neutral-950 opacity-0 group-hover:opacity-100 transition-opacity" />
+              </button>
+              <button className="w-full flex items-center justify-between p-3.5 border border-neutral-200 hover:border-neutral-950 transition-all hover:bg-neutral-50 group rounded-none">
+                <div className="flex items-center gap-3">
+                  <Zap size={14} className="text-neutral-500 group-hover:text-neutral-950 transition-colors" />
+                  <span className="text-xs font-black text-neutral-950 uppercase tracking-wider">Hành động AI của tôi</span>
                 </div>
-                <span className="text-sm font-bold text-gray-700">Hành động AI của tôi</span>
-              </div>
-              <Check size={14} className="text-gray-300 opacity-0 group-hover:opacity-100 transition-opacity" />
-            </button>
+                <Check size={12} className="text-neutral-950 opacity-0 group-hover:opacity-100 transition-opacity" />
+              </button>
+            </div>
           </div>
         </div>
 
         {/* Footer Area */}
-        <div className="p-8 border-t border-gray-100 bg-gray-50/30 flex items-center justify-between">
-          <p className="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em]">Cập nhật: {new Date().toLocaleDateString('vi-VN')}</p>
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-6 border-t border-neutral-950">
+          <p className="text-[9px] font-black text-neutral-400 uppercase tracking-[0.2em]">Cập nhật: {new Date().toLocaleDateString('vi-VN')}</p>
           <button 
             onClick={logout}
-            className="flex items-center gap-2 text-xs font-black text-red-500 hover:text-red-700 uppercase tracking-widest transition-colors"
+            className="w-full sm:w-auto px-6 py-2.5 border border-neutral-950 text-[10px] font-black uppercase tracking-widest hover:bg-neutral-950 hover:text-white transition-all text-center rounded-none text-neutral-950"
           >
-            <LogOut size={16} />
             Đăng xuất
           </button>
         </div>

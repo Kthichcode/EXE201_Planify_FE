@@ -14,6 +14,8 @@ import ProtectedRoute from './components/ProtectedRoute'
 import AdminLayout from './components/admin/AdminLayout'
 import AdminDashboard from './pages/admin/AdminDashboard'
 import AdminSubscriptions from './pages/admin/AdminSubscriptions'
+import AdminPlanFrameworks from './pages/admin/AdminPlanFrameworks'
+import AdminPlanTemplates from './pages/admin/AdminPlanTemplates'
 import AIChat from './components/AIChat'
 import { useState } from 'react'
 
@@ -45,6 +47,8 @@ function App() {
             <Route element={<AdminLayout />}>
               <Route path="/admin/dashboard" element={<AdminDashboard />} />
               <Route path="/admin/subscriptions" element={<AdminSubscriptions />} />
+              <Route path="/admin/frameworks" element={<AdminPlanFrameworks />} />
+              <Route path="/admin/templates" element={<AdminPlanTemplates />} />
               <Route path="/admin/users" element={<div className="p-8">Quản lý người dùng (Coming soon)</div>} />
               <Route path="/admin/settings" element={<div className="p-8">Cài đặt hệ thống (Coming soon)</div>} />
             </Route>

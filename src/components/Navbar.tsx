@@ -19,13 +19,15 @@ const Navbar: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
-          <Link to="/" className="flex items-center space-x-2 cursor-pointer">
-            <img src="/logo hệ thống planify.png" alt="Planify Logo" className="h-8 w-auto object-contain" />
-            <img src="/logo-text.png" alt="PLANIFY" className="h-4 w-auto object-contain mt-1" />
-          </Link>
+          <div className="flex-1 flex justify-start">
+            <Link to="/" className="flex items-center space-x-2 cursor-pointer">
+              <img src="/logo hệ thống planify.png" alt="Planify Logo" className="h-10 w-auto object-contain" />
+              <img src="/logo-text.png" alt="PLANIFY" className="h-5 w-auto object-contain mt-1" />
+            </Link>
+          </div>
 
           {/* Nav Links */}
-          <div className="hidden md:flex items-center space-x-8">
+          <div className="hidden md:flex items-center justify-center space-x-8">
             <NavLink to="/" end className={navLinkStyles}>Trang chủ</NavLink>
             <NavLink to="/planning" className={navLinkStyles}>Kế hoạch</NavLink>
             <NavLink to="/pricing" className={navLinkStyles}>Các gói</NavLink>
@@ -34,7 +36,7 @@ const Navbar: React.FC = () => {
           </div>
 
           {/* Action Buttons */}
-          <div className="flex items-center space-x-4">
+          <div className="flex-1 flex justify-end items-center space-x-4">
             {!user ? (
               <>
                 <Link 

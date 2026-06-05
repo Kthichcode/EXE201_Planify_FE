@@ -10,10 +10,8 @@ const Footer: React.FC = () => {
           {/* Brand */}
           <div className="col-span-1 md:col-span-1">
             <Link to="/" className="flex items-center space-x-2 mb-6 cursor-pointer">
-              <div className="w-8 h-8 bg-gradient-ai rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-xl">A</span>
-              </div>
-              <span className="text-2xl font-black tracking-tighter text-gray-900">PLANIFY</span>
+              <img src="/logo hệ thống planify.png" alt="Planify Logo" className="h-12 w-auto object-contain" />
+              <img src="/logo-text.png" alt="PLANIFY" className="h-6 w-auto object-contain mt-1" />
             </Link>
             <p className="text-gray-500 text-sm leading-relaxed mb-6">
               Nền tảng lập kế hoạch thông minh sử dụng trí tuệ nhân tạo để biến ý tưởng thành hành động cụ thể.

@@ -71,12 +71,14 @@ const Planning: React.FC = () => {
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const formatToISO = (dateStr: string) => {
-    if (!dateStr) return new Date().toISOString();
+  const formatToISO = (dateStr?: string) => {
+    if (!dateStr) return undefined;
     try {
-      return new Date(dateStr).toISOString();
+      const d = new Date(dateStr);
+      if (isNaN(d.getTime())) return undefined;
+      return d.toISOString();
     } catch {
-      return new Date().toISOString();
+      return undefined;
     }
   };
 
@@ -555,8 +557,11 @@ const Planning: React.FC = () => {
           {isSubmitting ? <RefreshCw className="animate-spin" size={22} /> : <Save size={22} />}
           {isSubmitting ? 'Đang lưu lộ trình...' : 'Hoàn tất & Lưu lộ trình'}
         </button>
-        <button className="px-10 py-5 bg-white border border-gray-100 text-gray-500 font-bold rounded-2xl hover:bg-gray-50 transition-all">
-          Lưu bản nháp
+        <button 
+          onClick={() => navigate('/my-plans')}
+          className="px-10 py-5 bg-white border border-gray-100 text-gray-500 font-bold rounded-2xl hover:bg-gray-50 transition-all"
+        >
+          Hủy bỏ
         </button>
       </div>
     </div>

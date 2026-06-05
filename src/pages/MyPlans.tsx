@@ -1,17 +1,40 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { Layout, Plus } from 'lucide-react';
+import { Layout, Plus, RefreshCw } from 'lucide-react';
+import { planService } from '../services/planService';
 
 const MyPlans: React.FC = () => {
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Navigate directly to the active plan since there's no Get All API yet
-    const currentPlanId = localStorage.getItem('currentPlanId');
-    if (currentPlanId) {
-      navigate(`/plans/${currentPlanId}`, { replace: true });
-    }
+    const checkAndRedirect = async () => {
+      try {
+        const response = await planService.getAllPlans();
+        const rawPlans = (response as any).data || (response as any).Data || response;
+        if (Array.isArray(rawPlans) && rawPlans.length > 0) {
+          // Navigate to the latest plan
+          navigate(`/plans/${rawPlans[0].id}`, { replace: true });
+          return;
+        }
+      } catch (error) {
+        console.error('Error fetching plans on MyPlans mount:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    checkAndRedirect();
   }, [navigate]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50/50">
+        <RefreshCw className="animate-spin text-primary mb-4" size={36} />
+        <p className="text-gray-500 font-bold tracking-wide animate-pulse">ĐANG TẢI KẾ HOẠCH...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="pt-24 pb-20 min-h-screen bg-surface flex flex-col items-center justify-center px-4">

@@ -25,6 +25,15 @@ export interface UserSubscription {
   aiRequestsUsed: number;
   cancelledAt: string | null;
   plan?: SubscriptionPlan;
+  
+  planName?: string;
+  PlanName?: string;
+  aiRequestsLimit?: number;
+  AiRequestsLimit?: number;
+  storageLimitMb?: number;
+  StorageLimitMb?: number;
+  maxPlans?: number;
+  MaxPlans?: number;
 }
 
 export interface PaymentTransaction {

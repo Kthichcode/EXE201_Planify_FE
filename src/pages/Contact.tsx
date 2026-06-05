@@ -19,7 +19,7 @@ const Contact: React.FC = () => {
             {[
               { icon: <Mail className="text-primary" />, title: 'Email', detail: 'support@planify.ai', desc: 'Gửi email cho chúng tôi bất cứ lúc nào.' },
               { icon: <Phone className="text-secondary" />, title: 'Điện thoại', detail: '+84 (0) 123 456 789', desc: 'Thứ 2 - Thứ 6, từ 8:00 đến 17:00.' },
-              { icon: <MapPin className="text-accent" />, title: 'Văn phòng', detail: 'Đà Nẵng, Việt Nam', desc: 'Khu Công nghệ cao, Hòa Vang.' }
+              { icon: <MapPin className="text-accent" />, title: 'Văn phòng', detail: 'Đại học FPT Hồ Chí Minh Quận 9, Thủ Đức', desc: 'Khu Công nghệ cao' }
             ].map((item, idx) => (
               <div key={idx} className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex items-start gap-4">
                 <div className="p-3 bg-gray-50 rounded-xl">{item.icon}</div>

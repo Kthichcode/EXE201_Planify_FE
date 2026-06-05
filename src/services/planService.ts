@@ -46,5 +46,11 @@ export const planService = {
     return apiClient(`/Plans/${planId}/draft`, {
       method: 'DELETE',
     });
+  },
+
+  async deletePlan(planId: string): Promise<ApiResponse<void>> {
+    return apiClient(`/Plans/${planId}`, {
+      method: 'DELETE',
+    });
   }
 };

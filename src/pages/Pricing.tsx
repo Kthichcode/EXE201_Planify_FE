@@ -167,10 +167,11 @@ const Pricing: React.FC = () => {
                     disabled={upgradingId !== null}
                     className={`
                       relative overflow-hidden group w-full py-5 rounded-2xl font-black text-sm tracking-widest uppercase transition-all duration-300
-                      ${isPro 
-                        ? 'bg-primary text-white shadow-xl shadow-primary/30 hover:shadow-primary/50 hover:bg-secondary' 
-                        : 'bg-gray-900 text-white hover:bg-black shadow-xl shadow-gray-900/10'}
-                      ${upgradingId === plan.id ? 'cursor-not-allowed' : ''}
+                      hover:scale-[1.05] hover:shadow-2xl active:scale-[0.97] cursor-pointer
+                      ${isFree 
+                        ? 'bg-white border-2 border-primary text-primary hover:bg-primary hover:text-white hover:shadow-primary/20 shadow-md' 
+                        : 'bg-gradient-to-r from-primary to-secondary text-white shadow-xl shadow-primary/30 hover:shadow-primary/50'}
+                      ${upgradingId === plan.id ? 'cursor-not-allowed opacity-85' : ''}
                     `}
                   >
                     <div className="relative z-10 flex items-center justify-center gap-2">
@@ -237,17 +238,17 @@ const Pricing: React.FC = () => {
           </div>
         </div>
 
-        {/* Contact Banner */}
-        <div className="mt-32 bg-gray-900 rounded-[3rem] p-12 md:p-20 relative overflow-hidden shadow-3xl shadow-gray-900/20">
+        {/* Contact Banner - Brightened to match homepage */}
+        <div className="mt-32 bg-gradient-to-r from-primary/10 via-purple-50/50 to-secondary/15 rounded-[3rem] p-12 md:p-20 relative overflow-hidden shadow-2xl shadow-primary/5 border border-primary/20">
           <div className="absolute top-0 right-0 w-96 h-96 bg-primary/20 rounded-full blur-[100px] -mr-48 -mt-48" />
           <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-12">
             <div className="max-w-md">
-              <h2 className="text-3xl md:text-4xl font-black text-white mb-6 leading-tight">Bạn cần một giải pháp cho tổ chức?</h2>
-              <p className="text-white/60 text-lg font-medium">Chúng tôi cung cấp các gói đặc biệt với mức chiết khấu cao cho trường học và câu lạc bộ sinh viên.</p>
+              <h2 className="text-3xl md:text-4xl font-black text-gray-900 mb-6 leading-tight">Bạn cần một giải pháp cho tổ chức?</h2>
+              <p className="text-gray-600 text-lg font-medium">Chúng tôi cung cấp các gói đặc biệt với mức chiết khấu cao cho trường học và câu lạc bộ sinh viên.</p>
             </div>
             <button 
               onClick={() => navigate('/contact')}
-              className="bg-white text-gray-900 px-10 py-5 rounded-2xl font-black text-sm tracking-widest uppercase hover:bg-primary hover:text-white transition-all shadow-2xl shadow-white/5 active:scale-95"
+              className="bg-gradient-to-r from-primary to-secondary text-white px-10 py-5 rounded-2xl font-black text-sm tracking-widest uppercase transition-all duration-300 hover:scale-[1.05] hover:shadow-xl hover:shadow-primary/30 active:scale-[0.97] cursor-pointer"
             >
               Liên hệ với chúng tôi
             </button>

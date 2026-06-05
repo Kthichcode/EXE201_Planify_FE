@@ -8,7 +8,9 @@ import {
   LogOut,
   ChevronRight,
   ShieldCheck,
-  Globe
+  Globe,
+  Grid,
+  BookOpen
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 
@@ -18,6 +20,8 @@ const AdminSidebar: React.FC = () => {
   const menuItems = [
     { icon: <LayoutDashboard size={20} />, label: 'Dashboard', path: '/admin/dashboard' },
     { icon: <CreditCard size={20} />, label: 'Gói dịch vụ', path: '/admin/subscriptions' },
+    { icon: <Grid size={20} />, label: 'Frameworks', path: '/admin/frameworks' },
+    { icon: <BookOpen size={20} />, label: 'Templates', path: '/admin/templates' },
     { icon: <Users size={20} />, label: 'Người dùng', path: '/admin/users' },
     { icon: <Settings size={20} />, label: 'Cài đặt', path: '/admin/settings' },
   ];

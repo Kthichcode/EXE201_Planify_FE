@@ -9,7 +9,7 @@ export interface CreatePlanDto {
   frameworkId: string | null;
   categoryId: string;
   isPublic: boolean;
-  deadline: string;
+  deadline?: string;
 }
 
 export interface CreatePlanTaskDto {
@@ -17,8 +17,8 @@ export interface CreatePlanTaskDto {
   parentTaskId: string | null;
   description: string;
   priority: TaskPriority;
-  startDate: string;
-  dueDate: string;
+  startDate?: string;
+  dueDate?: string;
   orderIndex: number;
 }
 

@@ -25,6 +25,14 @@ export interface GeneratePlanResponse {
   elapsedMs: number;
 }
 
+export interface RefinePlanResponse {
+  planId: string;
+  plan: Plan;
+  message: string;
+  model: string;
+  elapsedMs: number;
+}
+
 export const aiService = {
   async chat(data: ChatRequest): Promise<ChatResponse> {
     return apiClient('/ai/chat', {
@@ -37,6 +45,13 @@ export const aiService = {
     return apiClient('/ai/generate-plan', {
       method: 'POST',
       body: JSON.stringify({ prompt }),
+    });
+  },
+
+  async refinePlan(planId: string, instruction: string): Promise<RefinePlanResponse> {
+    return apiClient('/ai/refine-plan', {
+      method: 'POST',
+      body: JSON.stringify({ planId, instruction }),
     });
   }
 };
