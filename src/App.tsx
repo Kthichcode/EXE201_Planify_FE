@@ -11,11 +11,14 @@ import Auth from './pages/Auth'
 import Profile from './pages/Profile'
 import Footer from './components/Footer'
 import ProtectedRoute from './components/ProtectedRoute'
+import CommunityLibrary from './pages/CommunityLibrary'
+import CommunityPlanDetail from './pages/CommunityPlanDetail'
 import AdminLayout from './components/admin/AdminLayout'
 import AdminDashboard from './pages/admin/AdminDashboard'
 import AdminSubscriptions from './pages/admin/AdminSubscriptions'
 import AdminPlanFrameworks from './pages/admin/AdminPlanFrameworks'
 import AdminPlanTemplates from './pages/admin/AdminPlanTemplates'
+import AdminCommunityPlans from './pages/admin/AdminCommunityPlans'
 import AIChat from './components/AIChat'
 import { useState } from 'react'
 
@@ -35,6 +38,8 @@ function App() {
             <Route path="/my-plans" element={<MyPlans />} />
             <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
             <Route path="/plans/:id" element={<PlanDetail />} />
+            <Route path="/community" element={<CommunityLibrary />} />
+            <Route path="/community/:id" element={<CommunityPlanDetail />} />
             <Route path="/pricing" element={<Pricing />} />
             <Route path="/about" element={<About />} />
             <Route path="/contact" element={<Contact />} />
@@ -49,6 +54,7 @@ function App() {
               <Route path="/admin/subscriptions" element={<AdminSubscriptions />} />
               <Route path="/admin/frameworks" element={<AdminPlanFrameworks />} />
               <Route path="/admin/templates" element={<AdminPlanTemplates />} />
+              <Route path="/admin/community-plans" element={<AdminCommunityPlans />} />
               <Route path="/admin/users" element={<div className="p-8">Quản lý người dùng (Coming soon)</div>} />
               <Route path="/admin/settings" element={<div className="p-8">Cài đặt hệ thống (Coming soon)</div>} />
             </Route>

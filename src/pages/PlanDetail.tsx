@@ -4,11 +4,12 @@ import {
   ListTree, RefreshCw, Clock, AlertCircle, 
   Trash2, Send, User, Calendar, BookOpen, 
   ChevronRight, ChevronDown, CheckCircle, 
-  Sparkles, Layers, X, History, Search, Plus
+  Sparkles, Layers, X, History, Search, Plus, Globe
 } from 'lucide-react';
 import { Plan, PlanTask, TaskStatus, TaskPriority } from '../types/plan.types';
 import { planService } from '../services/planService';
 import { aiService } from '../services/aiService';
+import { communityService } from '../services/communityService';
 import { useToast } from '../context/ToastContext';
 import ConfirmModal from '../components/ConfirmModal';
 
@@ -144,6 +145,44 @@ const PlanDetail: React.FC = () => {
   const [expandedCategories, setExpandedCategories] = useState<Record<string, boolean>>({});
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   
+  // Publish Community states
+  const [isPublishModalOpen, setIsPublishModalOpen] = useState(false);
+  const [publishTitle, setPublishTitle] = useState('');
+  const [publishDescription, setPublishDescription] = useState('');
+  const [isPublishing, setIsPublishing] = useState(false);
+
+  const handleOpenPublishModal = () => {
+    if (!plan) return;
+    setPublishTitle(plan.title);
+    setPublishDescription(plan.description || '');
+    setIsPublishModalOpen(true);
+  };
+
+  const handlePublishPlan = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!plan) return;
+    if (!publishTitle.trim()) {
+      showToast('Vui lòng nhập tiêu đề chia sẻ', 'warning');
+      return;
+    }
+
+    setIsPublishing(true);
+    try {
+      await communityService.publishPlan({
+        planId: plan.id,
+        title: publishTitle.trim(),
+        description: publishDescription.trim() || undefined,
+        categoryId: plan.categoryId || '3fa85f64-5717-4562-b3fc-2c963f66afa6'
+      });
+      showToast('Gửi phê duyệt chia sẻ thành công!', 'success');
+      setIsPublishModalOpen(false);
+    } catch (error: any) {
+      showToast('Lỗi khi gửi phê duyệt: ' + error.message, 'error');
+    } finally {
+      setIsPublishing(false);
+    }
+  };
+  
   // Plans List States (for Sidebar History)
   const [plansList, setPlansList] = useState<Plan[]>([]);
   const [plansLoading, setPlansLoading] = useState(true);
@@ -205,6 +244,7 @@ const PlanDetail: React.FC = () => {
           progress: rawData.progress !== undefined ? rawData.progress : (rawData.Progress !== undefined ? rawData.Progress : 0),
           deadline: rawData.deadline || rawData.Deadline,
           isPublic: rawData.isPublic !== undefined ? rawData.isPublic : (rawData.IsPublic !== undefined ? rawData.IsPublic : false),
+          categoryId: rawData.categoryId || rawData.CategoryId || null,
           tasks: (rawData.tasks || rawData.Tasks || []).map(mapTask)
         };
         planData = parsedPlan;
@@ -667,6 +707,12 @@ const PlanDetail: React.FC = () => {
                   </>
                 ) : (
                   <>
+                    <button 
+                      onClick={handleOpenPublishModal}
+                      className="flex items-center gap-1.5 px-3 py-1.5 border border-primary/20 bg-primary/5 rounded-xl text-[10px] font-bold text-primary hover:bg-primary/10 active:scale-95 transition-all"
+                    >
+                      <Globe size={12} /> Chia sẻ
+                    </button>
                     <button 
                       onClick={() => setIsDeleteModalOpen(true)}
                       className="flex items-center gap-1.5 px-3 py-1.5 border border-red-100 rounded-xl text-[10px] font-bold text-red-500 hover:bg-red-50 active:scale-95 transition-all"
@@ -1229,6 +1275,71 @@ const PlanDetail: React.FC = () => {
         onConfirm={handleDeleteActivePlan}
         onCancel={() => setIsDeleteModalOpen(false)}
       />
+
+      {/* Publish Community Modal */}
+      {isPublishModalOpen && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="bg-white rounded-[2rem] w-full max-w-md shadow-2xl p-6 border border-gray-100 space-y-5 transform animate-in zoom-in-95 duration-200">
+            <div>
+              <h3 className="font-black text-sm text-gray-800">Chia sẻ Kế hoạch lên Thư viện</h3>
+              <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-0.5">
+                Kế hoạch sẽ được gửi đến Admin để phê duyệt trước khi công khai.
+              </p>
+            </div>
+
+            <form onSubmit={handlePublishPlan} className="space-y-4">
+              <div className="space-y-1">
+                <label className="text-[10px] font-black text-gray-400 uppercase tracking-wider">Tiêu đề hiển thị</label>
+                <input
+                  type="text"
+                  required
+                  value={publishTitle}
+                  onChange={(e) => setPublishTitle(e.target.value)}
+                  placeholder="Tiêu đề hiển thị trên thư viện cộng đồng..."
+                  className="w-full p-3.5 bg-gray-50 border border-transparent rounded-2xl outline-none focus:bg-white focus:border-primary/20 transition-all text-xs font-semibold text-gray-800"
+                />
+              </div>
+
+              <div className="space-y-1">
+                <label className="text-[10px] font-black text-gray-400 uppercase tracking-wider">Mô tả giới thiệu</label>
+                <textarea
+                  value={publishDescription}
+                  onChange={(e) => setPublishDescription(e.target.value)}
+                  placeholder="Mô tả mục đích, kết quả hoặc hướng dẫn áp dụng cho lộ trình này..."
+                  className="w-full h-24 p-3.5 bg-gray-50 border border-transparent rounded-2xl outline-none focus:bg-white focus:border-primary/20 transition-all text-xs text-gray-600 resize-none leading-relaxed"
+                />
+              </div>
+
+              <div className="flex gap-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsPublishModalOpen(false);
+                    setPublishTitle('');
+                    setPublishDescription('');
+                  }}
+                  className="flex-1 py-3.5 bg-white border border-gray-200 text-gray-500 font-bold rounded-2xl text-xs hover:bg-gray-100 transition-all"
+                >
+                  Hủy bỏ
+                </button>
+                <button
+                  type="submit"
+                  disabled={isPublishing}
+                  className="flex-1 py-3.5 bg-primary text-white font-bold rounded-2xl text-xs hover:scale-105 active:scale-95 disabled:opacity-40 transition-all flex items-center justify-center gap-1.5"
+                >
+                  {isPublishing ? (
+                    <RefreshCw className="animate-spin" size={14} />
+                  ) : (
+                    <>
+                      <Globe size={14} /> Gửi phê duyệt
+                    </>
+                  )}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

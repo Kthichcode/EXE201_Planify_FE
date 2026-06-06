@@ -47,5 +47,6 @@ export interface Plan {
   isAIGenerated: boolean;
   deadline: string;
   createdAt: string;
+  categoryId?: string | null;
   tasks: PlanTask[];
 }

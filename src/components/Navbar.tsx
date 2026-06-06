@@ -30,6 +30,7 @@ const Navbar: React.FC = () => {
           <div className="hidden md:flex items-center justify-center space-x-8">
             <NavLink to="/" end className={navLinkStyles}>Trang chủ</NavLink>
             <NavLink to="/planning" className={navLinkStyles}>Kế hoạch</NavLink>
+            <NavLink to="/community" className={navLinkStyles}>Thư viện</NavLink>
             <NavLink to="/pricing" className={navLinkStyles}>Các gói</NavLink>
             <NavLink to="/about" className={navLinkStyles}>Về chúng tôi</NavLink>
             <NavLink to="/contact" className={navLinkStyles}>Liên hệ</NavLink>

@@ -22,6 +22,7 @@ const AdminSidebar: React.FC = () => {
     { icon: <CreditCard size={20} />, label: 'Gói dịch vụ', path: '/admin/subscriptions' },
     { icon: <Grid size={20} />, label: 'Frameworks', path: '/admin/frameworks' },
     { icon: <BookOpen size={20} />, label: 'Templates', path: '/admin/templates' },
+    { icon: <Globe size={20} />, label: 'Duyệt kế hoạch', path: '/admin/community-plans' },
     { icon: <Users size={20} />, label: 'Người dùng', path: '/admin/users' },
     { icon: <Settings size={20} />, label: 'Cài đặt', path: '/admin/settings' },
   ];
