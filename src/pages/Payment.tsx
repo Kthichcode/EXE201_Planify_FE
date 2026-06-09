@@ -30,7 +30,6 @@ const Payment: React.FC = () => {
   const [isLoadingInfo, setIsLoadingInfo] = useState(true);
   const [paymentStatus, setPaymentStatus] = useState<'pending' | 'success' | 'failed'>('pending');
   const [copiedField, setCopiedField] = useState<string | null>(null);
-  const [countdown, setCountdown] = useState(4); // For redirecting countdown
 
   // Fetch Checkout info from backend on load
   useEffect(() => {
@@ -124,23 +123,7 @@ const Payment: React.FC = () => {
     };
   }, [currentOrderCode]);
 
-  // Success countdown redirect
-  useEffect(() => {
-    if (paymentStatus !== 'success') return;
 
-    const timer = setInterval(() => {
-      setCountdown((prev) => {
-        if (prev <= 1) {
-          clearInterval(timer);
-          navigate(returnUrl);
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
-
-    return () => clearInterval(timer);
-  }, [paymentStatus, navigate, returnUrl]);
 
   if (isLoadingInfo) {
     return (
@@ -217,9 +200,12 @@ const Payment: React.FC = () => {
             Hệ thống đang chuẩn bị môi trường làm việc của bạn...
           </div>
 
-          <p className="text-xs text-slate-400 font-bold">
-            Tự động quay lại sau <span className="text-emerald-600 text-sm font-black">{countdown}</span> giây
-          </p>
+          <button 
+            onClick={() => navigate(returnUrl)}
+            className="w-full max-w-xs mx-auto py-3.5 bg-emerald-500 hover:bg-emerald-600 text-white font-extrabold text-xs uppercase tracking-widest rounded-2xl shadow-lg shadow-emerald-500/20 hover:shadow-xl hover:shadow-emerald-500/30 transition-all active:scale-95 cursor-pointer block text-center"
+          >
+            Bắt đầu trải nghiệm ngay
+          </button>
         </div>
       ) : (
         /* PAYMENT CHECKOUT CARD */
