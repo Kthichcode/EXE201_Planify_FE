@@ -183,7 +183,7 @@ const CommunityLibrary: React.FC = () => {
         {/* Library Grid */}
         {loading ? (
           <div className="py-32 flex flex-col items-center justify-center bg-white border border-neutral-200">
-            <div className="w-10 h-10 border-4 border-neutral-200 border-t-primary rounded-full animate-spin"></div>
+            <div className="w-10 h-10 border-4 border-neutral-200 border-t-primary rounded-full animate-spin" style={{ width: '40px', height: '40px', flexShrink: 0 }}></div>
             <p className="text-[10px] font-black text-neutral-400 uppercase tracking-widest mt-4 animate-pulse">Đang tìm kiếm dữ liệu...</p>
           </div>
         ) : plans.length === 0 ? (
