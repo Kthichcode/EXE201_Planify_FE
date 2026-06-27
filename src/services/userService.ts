@@ -17,6 +17,12 @@ export interface UserAdminResponse {
   subscriptionExpiresAt?: string;
 }
 
+export interface OnboardingStatus {
+  status: 'not_started' | 'in_progress' | 'completed' | 'skipped';
+  step: number;
+  shouldShowTour: boolean;
+}
+
 export const userService = {
   async getProfile(): Promise<ApiResponse<UserProfile>> {
     return apiClient('/User/profile', {
@@ -28,5 +34,19 @@ export const userService = {
     return apiClient('/admin/users', {
       method: 'GET',
     });
-  }
+  },
+
+  async getOnboardingStatus(): Promise<ApiResponse<OnboardingStatus>> {
+    return apiClient('/User/onboarding', {
+      method: 'GET',
+    });
+  },
+
+  async updateOnboarding(status: string, step: number): Promise<ApiResponse<OnboardingStatus>> {
+    return apiClient('/User/onboarding', {
+      method: 'PUT',
+      body: JSON.stringify({ status, step }),
+    });
+  },
 };
+

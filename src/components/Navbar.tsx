@@ -181,8 +181,9 @@ const Navbar: React.FC = () => {
           {/* Nav Links */}
           <div className="hidden md:flex items-center justify-center space-x-8">
             <NavLink to="/" end className={navLinkStyles}>Trang chủ</NavLink>
-            <NavLink to="/planning" className={navLinkStyles}>Kế hoạch</NavLink>
-            <NavLink to="/community" className={navLinkStyles}>Thư viện</NavLink>
+            <NavLink to="/planning" data-tour="nav-planning" className={navLinkStyles}>Kế hoạch</NavLink>
+            <NavLink to="/my-plans" data-tour="nav-my-plans" className={navLinkStyles}>Lộ trình của tôi</NavLink>
+            <NavLink to="/community" data-tour="nav-community" className={navLinkStyles}>Thư viện</NavLink>
             <NavLink to="/pricing" className={navLinkStyles}>Các gói</NavLink>
             <NavLink to="/about" className={navLinkStyles}>Về chúng tôi</NavLink>
             <NavLink to="/contact" className={navLinkStyles}>Liên hệ</NavLink>
