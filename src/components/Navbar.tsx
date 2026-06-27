@@ -333,6 +333,7 @@ const Navbar: React.FC = () => {
                 {/* Profile Menu Dropdown */}
                 <div className="relative" ref={dropdownRef}>
                   <button 
+                    data-tour="nav-user"
                     onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                     className="flex items-center gap-3 px-4 py-1.5 bg-gray-50 hover:bg-white rounded-full border border-gray-100 hover:border-primary/20 hover:shadow-lg hover:shadow-primary/5 transition-all group"
                   >

@@ -601,6 +601,7 @@ const Planning: React.FC = () => {
         <div className="flex justify-center mb-12">
           <div className="bg-white p-1.5 rounded-2xl shadow-sm border border-gray-100 flex items-center gap-1">
             <button 
+              data-tour="planning-ai-btn"
               onClick={() => setActiveMode('ai')}
               className={`flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-bold transition-all duration-300 ${
                 activeMode === 'ai' 
@@ -612,6 +613,7 @@ const Planning: React.FC = () => {
               Trí Tuệ Nhân Tạo
             </button>
             <button 
+              data-tour="planning-manual-btn"
               onClick={() => {
                 setActiveMode('manual');
                 if (!createdPlan) setManualStep(1);

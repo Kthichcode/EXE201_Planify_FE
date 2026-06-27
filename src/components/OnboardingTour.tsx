@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback, useRef } from 'react';
-import { X, ChevronRight, ChevronLeft, Map, Sparkles, LayoutDashboard, BookOpen, Users, Rocket } from 'lucide-react';
+import { X, ChevronRight, ChevronLeft, Map, Sparkles, LayoutDashboard, BookOpen, Users, Rocket, Bot, PenLine, UserCircle } from 'lucide-react';
 import { userService } from '../services/userService';
 
 // ── Tour Steps Definition ────────────────────────────────────────────────────
@@ -22,10 +22,26 @@ const TOUR_STEPS: TourStep[] = [
   },
   {
     id: 'navbar-planning',
-    title: 'Tạo kế hoạch mới',
-    description: 'Nhấn vào "Lập Kế Hoạch" trên thanh điều hướng để tạo lộ trình mới. Bạn có thể dùng AI thông minh hoặc tự tay thiết kế từng bước.',
+    title: 'Trang Lập Kế Hoạch',
+    description: 'Nhấn vào "Ấn Này" trên thanh điều hướng để vào trang tạo lộ trình. Đây là nơi bạn sẽ bắt đầu xây dựng kế hoạch của mình!',
     icon: <Map size={28} className="text-white" />,
     targetSelector: '[data-tour="nav-planning"]',
+    position: 'bottom',
+  },
+  {
+    id: 'planning-ai-btn',
+    title: 'Tạo kế hoạch bằng AI ✨',
+    description: 'Chế độ "Trí Tuệ Nhân Tạo" — chỉ cần mô tả mục tiêu của bạn, AI sẽ tự động lên toàn bộ lộ trình chi tiết chỉ trong vài giây!',
+    icon: <Bot size={28} className="text-white" />,
+    targetSelector: '[data-tour="planning-ai-btn"]',
+    position: 'bottom',
+  },
+  {
+    id: 'planning-manual-btn',
+    title: 'Tự lên kế hoạch ✏️',
+    description: 'Chế độ "Tự Lên Kế Hoạch" — bạn toàn quyền quyết định từng bước, từng nhiệm vụ. Phù hợp khi bạn đã có sẵn ý tưởng rõ ràng.',
+    icon: <PenLine size={28} className="text-white" />,
+    targetSelector: '[data-tour="planning-manual-btn"]',
     position: 'bottom',
   },
   {
@@ -42,6 +58,14 @@ const TOUR_STEPS: TourStep[] = [
     description: 'Khám phá hàng trăm lộ trình được chia sẻ từ cộng đồng. Bạn có thể sao chép và chỉnh sửa theo ý muốn.',
     icon: <Users size={28} className="text-white" />,
     targetSelector: '[data-tour="nav-community"]',
+    position: 'bottom',
+  },
+  {
+    id: 'nav-user-profile',
+    title: 'Hồ sơ & Lượt dùng AI 🧠',
+    description: 'Nhấn vào tên của bạn ở góc phải để mở menu. Chọn "Hồ sơ của tôi" để xem số lượt tạo kế hoạch bằng AI còn lại, lịch sử dụng và thông tin tài khoản.',
+    icon: <UserCircle size={28} className="text-white" />,
+    targetSelector: '[data-tour="nav-user"]',
     position: 'bottom',
   },
   {
@@ -371,8 +395,22 @@ const OnboardingTour: React.FC<OnboardingTourProps> = ({ isLoggedIn }) => {
         />
       )}
 
-      {/* Clickable overlay (to block interactions outside tooltip) */}
-      <div className="fixed inset-0" style={{ zIndex: 10000 }} onClick={handleStop} />
+      {/* 4-panel overlay — chặn click ngoài spotlight, nhưng cho phép click vào vùng highlight */}
+      {spotlightRect && !isCenterStep ? (
+        <>
+          {/* Top panel */}
+          <div className="fixed left-0 right-0" style={{ zIndex: 10000, top: 0, height: Math.max(0, spotlightRect.top - PADDING) }} />
+          {/* Bottom panel */}
+          <div className="fixed left-0 right-0" style={{ zIndex: 10000, top: spotlightRect.bottom + PADDING, bottom: 0 }} />
+          {/* Left panel */}
+          <div className="fixed" style={{ zIndex: 10000, top: Math.max(0, spotlightRect.top - PADDING), left: 0, width: Math.max(0, spotlightRect.left - PADDING), height: spotlightRect.height + PADDING * 2 }} />
+          {/* Right panel */}
+          <div className="fixed" style={{ zIndex: 10000, top: Math.max(0, spotlightRect.top - PADDING), left: spotlightRect.right + PADDING, right: 0, height: spotlightRect.height + PADDING * 2 }} />
+        </>
+      ) : (
+        // Center step — block toàn màn hình (không có element cụ thể để click)
+        <div className="fixed inset-0" style={{ zIndex: 10000 }} />
+      )}
 
       {/* ── Tooltip Card ── */}
       <div
