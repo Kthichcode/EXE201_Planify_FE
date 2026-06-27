@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback, useRef } from 'react';
-import { X, ChevronRight, ChevronLeft, Map, Sparkles, LayoutDashboard, BookOpen, Users, Rocket, Bot, PenLine, UserCircle } from 'lucide-react';
+import { X, ChevronRight, ChevronLeft, Map, Sparkles, BookOpen, Users, Rocket, Bot, PenLine, UserCircle } from 'lucide-react';
 import { userService } from '../services/userService';
 
 // ── Tour Steps Definition ────────────────────────────────────────────────────
@@ -45,16 +45,8 @@ const TOUR_STEPS: TourStep[] = [
     position: 'bottom',
   },
   {
-    id: 'navbar-my-plans',
-    title: 'Kế hoạch của bạn',
-    description: 'Tất cả lộ trình bạn đã tạo được lưu tại đây. Bạn có thể theo dõi tiến độ, tick hoàn thành từng nhiệm vụ và xem thống kê.',
-    icon: <LayoutDashboard size={28} className="text-white" />,
-    targetSelector: '[data-tour="nav-my-plans"]',
-    position: 'bottom',
-  },
-  {
     id: 'navbar-community',
-    title: 'Thư viện cộng đồng',
+    title: 'Thư viện cộng đồng 📚',
     description: 'Khám phá hàng trăm lộ trình được chia sẻ từ cộng đồng. Bạn có thể sao chép và chỉnh sửa theo ý muốn.',
     icon: <Users size={28} className="text-white" />,
     targetSelector: '[data-tour="nav-community"]',
@@ -62,8 +54,8 @@ const TOUR_STEPS: TourStep[] = [
   },
   {
     id: 'nav-user-profile',
-    title: 'Hồ sơ & Lượt dùng AI 🧠',
-    description: 'Nhấn vào tên của bạn ở góc phải để mở menu. Chọn "Hồ sơ của tôi" để xem số lượt tạo kế hoạch bằng AI còn lại, lịch sử dụng và thông tin tài khoản.',
+    title: 'Lộ trình & Hồ sơ cá nhân 👤',
+    description: 'Nhấn vào tên của bạn ở góc phải để mở menu. Tại đây bạn có thể vào "Lộ trình của tôi" để quản lý các kế hoạch đã tạo, hoặc vào "Hồ sơ của tôi" để kiểm tra số lượt dùng AI còn lại.',
     icon: <UserCircle size={28} className="text-white" />,
     targetSelector: '[data-tour="nav-user"]',
     position: 'bottom',

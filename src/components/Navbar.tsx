@@ -182,7 +182,6 @@ const Navbar: React.FC = () => {
           <div className="hidden md:flex items-center justify-center space-x-8">
             <NavLink to="/" end className={navLinkStyles}>Trang chủ</NavLink>
             <NavLink to="/planning" data-tour="nav-planning" className={navLinkStyles}>Kế hoạch</NavLink>
-            <NavLink to="/my-plans" data-tour="nav-my-plans" className={navLinkStyles}>Lộ trình của tôi</NavLink>
             <NavLink to="/community" data-tour="nav-community" className={navLinkStyles}>Thư viện</NavLink>
             <NavLink to="/pricing" className={navLinkStyles}>Các gói</NavLink>
             <NavLink to="/about" className={navLinkStyles}>Về chúng tôi</NavLink>
@@ -381,7 +380,7 @@ const Navbar: React.FC = () => {
                         <div className="p-2 bg-gray-50 rounded-xl group-hover:bg-primary/10 transition-colors">
                           <Layout size={18} />
                         </div>
-                        <span className="text-sm font-bold">Kế hoạch của tôi</span>
+                        <span className="text-sm font-bold">Lộ trình của tôi</span>
                       </Link>
 
                       <div className="h-px bg-gray-50 mx-5 my-2"></div>
